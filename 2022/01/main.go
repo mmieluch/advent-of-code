@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"sort"
 	"strconv"
 )
 
@@ -13,9 +14,35 @@ func main() {
 	input := loadInput(fname)
 	elves := parseInput(input)
 
-	topCarrier := elves.TopCarrier()
+	// Part 1
+	runPart1(elves)
+	// Part 2
+	runPart2(elves)
+}
 
+func runPart1(ee Elves) {
+	topCarrier := ee.TopCarrier()
 	fmt.Println(topCarrier.GetTotal())
+}
+
+func runPart2(ee Elves) {
+	totals := make([]int, len(ee))
+
+	// Get the totals for each elf. We don't need to know which specific elves
+	// are the top 3 carriers, only how much each of them carries on them.
+	for idx, elf := range ee {
+		totals[idx] = int(elf.GetTotal())
+	}
+
+	sort.Sort(sort.Reverse(sort.IntSlice(totals)))
+	top := totals[:3]
+	topTotal := 0
+
+	for _, val := range top {
+		topTotal += val
+	}
+
+	fmt.Println(topTotal)
 }
 
 func loadInput(fname string) []byte {
