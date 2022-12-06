@@ -22,7 +22,7 @@ func main() {
 
 func runPart1(ee Elves) {
 	topCarrier := ee.TopCarrier()
-	fmt.Println(topCarrier.GetTotal())
+	fmt.Println("The elf carrying the most calorific snacks is carrying the total of", topCarrier.GetTotal(), "calories.")
 }
 
 func runPart2(ee Elves) {
@@ -42,7 +42,7 @@ func runPart2(ee Elves) {
 		topTotal += val
 	}
 
-	fmt.Println(topTotal)
+	fmt.Println("The three elves carrying the most calorific snacks carry", topTotal, "calories in total.")
 }
 
 func loadInput(fname string) []byte {
