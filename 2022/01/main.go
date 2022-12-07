@@ -1,17 +1,22 @@
 package main
 
 import (
-	"bytes"
 	"fmt"
 	"log"
 	"os"
 	"sort"
 	"strconv"
+	"strings"
+
+	"github.com/mmieluch/advent-of-code/2022/internal"
 )
 
 func main() {
-	fname := os.Args[1]
-	input := loadInput(fname)
+	input, err := internal.GetInput()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	elves := parseInput(input)
 
 	// Part 1
@@ -88,16 +93,15 @@ func (e *Elf) GetTotal() uint {
 	return total
 }
 
-func parseInput(input []byte) Elves {
-	input = bytes.TrimSpace(input)
-	segs := bytes.Split(input, []byte("\n\n"))
+func parseInput(input string) Elves {
+	segs := strings.Split(input, "\n\n")
 
 	var ee Elves
 
 	for _, seg := range segs {
 		elf := Elf{}
 
-		cals := bytes.Split(seg, []byte("\n"))
+		cals := strings.Split(seg, "\n")
 
 		for _, cal := range cals {
 			ical, _ := strconv.Atoi(string(cal))

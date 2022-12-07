@@ -11,11 +11,11 @@ Link: https://adventofcode.com/2022/day/1
 Run with example input:
 
 ```shell
-go run main.go input.dev
+go run main.go
 ```
 
-Run with puzzle production input:
+Run with production input:
 
 ```shell
-go run main.go input.prod
+go run main.go --production
 ```
