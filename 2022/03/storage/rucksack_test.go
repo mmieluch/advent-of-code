@@ -3,6 +3,8 @@ package storage
 import (
 	"reflect"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_NewRucksack(t *testing.T) {
@@ -86,6 +88,18 @@ func Test_NewRucksack_ErrorWhenOddNumberOfItems(t *testing.T) {
 	}
 }
 
+func Test_Intersection_ToSlice(t *testing.T) {
+	is := intersection{
+		'a': nil,
+		'b': nil,
+		'c': nil,
+		'x': nil,
+		'y': nil,
+		'z': nil,
+	}
+	assert.ElementsMatch(t, []rune{'a', 'b', 'c', 'x', 'y', 'z'}, is.ToSlice())
+}
+
 func Test_Rucksack_CommonItems(t *testing.T) {
 	testData := []struct {
 		r        Rucksack
@@ -143,4 +157,36 @@ func equals(a, b []rune) bool {
 	}
 
 	return true
+}
+
+func Test_SharedByAll(t *testing.T) {
+	input := []Rucksack{
+		{Compartment("abK"), Compartment("cKd")},
+		{Compartment("efK"), Compartment("Kgh")},
+		{Compartment("Kij"), Compartment("kKl")},
+		{Compartment("mnK"), Compartment("Kop")},
+	}
+	expected := []rune{'K'}
+	actual := SharedByAll(input...)
+	assert.Equal(t, expected, actual)
+}
+
+func Test_Rucksack_AllItems(t *testing.T) {
+	r := Rucksack{
+		Left:  Compartment("abc"),
+		Right: Compartment("cde"),
+	}
+	assert.Equal(t, r.AllItems(), []rune{'a', 'b', 'c', 'c', 'd', 'e'})
+}
+
+func Test_removeRune(t *testing.T) {
+	input := []rune("abcdefgghijkglmnop")
+	expected := []rune("abcdefhijklmnop")
+	assert.Equal(t, expected, removeRune('g', input))
+}
+
+func Test_sliceHasRune(t *testing.T) {
+	input := []rune("abcdefghijklmnop")
+	assert.True(t, sliceHasRune('g', input))
+	assert.False(t, sliceHasRune('q', input))
 }

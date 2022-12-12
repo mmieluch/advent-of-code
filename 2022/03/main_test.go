@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/mmieluch/advent-of-code/2022/03/storage"
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_parseManifest(t *testing.T) {
@@ -92,5 +93,41 @@ func Test_pack(t *testing.T) {
 				fmt.Sprintf("%v", rr[i]),
 			)
 		}
+	}
+}
+
+func Test_asTriplets(t *testing.T) {
+	input := []storage.Rucksack{
+		{storage.Compartment("abc"), storage.Compartment("def")},
+		{storage.Compartment("ghi"), storage.Compartment("jkl")},
+		{storage.Compartment("mno"), storage.Compartment("pqr")},
+		{storage.Compartment("stu"), storage.Compartment("vwx")},
+		{storage.Compartment("yzA"), storage.Compartment("BCD")},
+		{storage.Compartment("EFG"), storage.Compartment("HIJ")},
+	}
+
+	result, err := asTriplets(input)
+	assert.Nil(t, err)
+	assert.Len(t, result, 2)
+
+	assert.Equal(t, input[0], result[0][0])
+	assert.Equal(t, input[1], result[0][1])
+	assert.Equal(t, input[2], result[0][2])
+	assert.Equal(t, input[3], result[1][0])
+	assert.Equal(t, input[4], result[1][1])
+	assert.Equal(t, input[5], result[1][2])
+}
+
+func Test_asTriplets_errorWhenIncorrectNumberOfRucksacks(t *testing.T) {
+	var input []storage.Rucksack
+	for i := 0; i < 5; i++ {
+		input = append(input, storage.Rucksack{})
+	}
+
+	result, err := asTriplets(input)
+	assert.Error(t, err, "asTriplets should fail when given a slice of rucksacks that is not a multiple of 3")
+
+	if len(result) > 0 {
+		t.Errorf("expected the result to be empty")
 	}
 }
