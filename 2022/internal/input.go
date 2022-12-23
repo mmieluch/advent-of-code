@@ -48,5 +48,5 @@ func LoadInput(abspath string) (string, error) {
 		return "", err
 	}
 
-	return strings.TrimSpace(string(body)), nil
+	return string(body), nil
 }
