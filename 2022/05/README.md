@@ -4,20 +4,20 @@ Link: https://adventofcode.com/2022/day/5
 
 ## Solution status
 
-🟢 **IN PROGRESS**
+🟢 **WORKING**
 
 ## Instructions
 
 Run with example input:
 
 ```shell
-go run *.go
+go run main.go
 ```
 
 Run with production input:
 
 ```shell
-go run *.go --production
+go run main.go --production
 ```
 
 Run unit tests:

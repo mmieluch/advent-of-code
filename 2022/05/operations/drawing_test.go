@@ -48,6 +48,15 @@ func Test_tokeniseDrawing(t *testing.T) {
 	assert.Equal(t, expected, tokeniseDrawing(input))
 }
 
+func Test_Stacks_GetTopItems(t *testing.T) {
+	input := Stacks{
+		1: {"Z", "N"},
+		2: {"M", "C", "D"},
+		3: {"P"},
+	}
+	assert.Equal(t, "NDP", input.GetTopItems())
+}
+
 func Test_pop(t *testing.T) {
 	input := Stack{"a", "b", "c"}
 	expectedItem := "c"
@@ -58,7 +67,7 @@ func Test_pop(t *testing.T) {
 	assert.Equal(t, expectedStack, popped)
 }
 
-func Test_ApplyInstructions(t *testing.T) {
+func Test_ReorderSequentially(t *testing.T) {
 	input := Stacks{
 		1: {"Z", "N"},
 		2: {"M", "C", "D"},
@@ -75,9 +84,51 @@ func Test_ApplyInstructions(t *testing.T) {
 		2: {"M"},
 		3: {"P", "D", "N", "Z"},
 	}
-	updated, err := Reorder(input, instructions)
+	updated, err := ReorderSequentially(input, instructions)
 	assert.Nil(t, err)
 	assert.Equal(t, expected, updated)
+}
+
+func Test_ReorderGrouped(t *testing.T) {
+	input := Stacks{
+		1: {"Z", "N"},
+		2: {"M", "C", "D"},
+		3: {"P"},
+	}
+	instructions := []Instruction{
+		{NumOps: 1, Source: 2, Target: 1},
+		{NumOps: 3, Source: 1, Target: 3},
+		{NumOps: 2, Source: 2, Target: 1},
+		{NumOps: 1, Source: 1, Target: 2},
+	}
+	expected := Stacks{
+		1: {"M"},
+		2: {"C"},
+		3: {"P", "Z", "N", "D"},
+	}
+	updated, err := ReorderGrouped(input, instructions)
+	assert.Nil(t, err)
+	assert.Equal(t, expected, updated)
+}
+
+func Test_TakeFromStack(t *testing.T) {
+	input := Stack{"a", "b", "c"}
+	taken, remained, err := takeFromStack(input, 1)
+	assert.Nil(t, err)
+	assert.Equal(t, Stack{"c"}, taken)
+	assert.Equal(t, Stack{"a", "b"}, remained)
+
+	input = Stack{"a", "b", "c"}
+	taken, remained, err = takeFromStack(input, 2)
+	assert.Nil(t, err)
+	assert.Equal(t, Stack{"b", "c"}, taken)
+	assert.Equal(t, Stack{"a"}, remained)
+
+	input = Stack{"a"}
+	taken, remained, err = takeFromStack(input, 2)
+	assert.Error(t, err)
+	assert.Empty(t, taken)
+	assert.Empty(t, remained)
 }
 
 func Test_Stack_GetTopItem(t *testing.T) {

@@ -1,6 +1,7 @@
 package operations
 
 import (
+	"fmt"
 	"regexp"
 	"strings"
 )
@@ -17,7 +18,18 @@ func (s *Stack) GetTopItem() string {
 
 type Stacks map[int]Stack
 
-func Reorder(ss Stacks, ii []Instruction) (Stacks, error) {
+func (ssp *Stacks) GetTopItems() string {
+	out := ""
+
+	for i := 1; i <= len(*ssp); i++ {
+		s := (*ssp)[i]
+		out += s.GetTopItem()
+	}
+
+	return out
+}
+
+func ReorderSequentially(ss Stacks, ii []Instruction) (Stacks, error) {
 	for _, ins := range ii {
 		for i := 0; i < ins.NumOps; i++ {
 			item, popped := pop(ss[ins.Source])
@@ -27,6 +39,38 @@ func Reorder(ss Stacks, ii []Instruction) (Stacks, error) {
 	}
 
 	return ss, nil
+}
+
+func CloneStacks(ss Stacks) Stacks {
+	cp := make(Stacks)
+	for key, s := range ss {
+		cp[key] = make(Stack, len(s))
+		copy(cp[key], s)
+	}
+	return cp
+}
+
+func ReorderGrouped(ss Stacks, ii []Instruction) (Stacks, error) {
+	for _, ins := range ii {
+		taken, rest, err := takeFromStack(ss[ins.Source], ins.NumOps)
+		if err != nil {
+			return Stacks{}, fmt.Errorf("reordering groupped containers failed: %w", err)
+		}
+		ss[ins.Source] = rest
+		ss[ins.Target] = append(ss[ins.Target], taken...)
+	}
+
+	return ss, nil
+}
+
+func takeFromStack(src Stack, num int) (Stack, Stack, error) {
+	ll := len(src)
+	if num > ll {
+		return []string{}, Stack{}, fmt.Errorf("requested to take too many items off the source: %d, but only %d available", num, ll)
+	}
+	offset := ll - num
+
+	return src[offset:], src[:offset], nil
 }
 
 func pop(src Stack) (string, Stack) {

@@ -21,22 +21,30 @@ func main() {
 	}
 
 	Part1(stacks, instructions)
-
+	Part2(stacks, instructions)
 }
 
 func Part1(ss operations.Stacks, ii []operations.Instruction) {
 	internal.PrintPartHeading("Part 1")
 
-	updated, err := operations.Reorder(ss, ii)
+	ss = operations.CloneStacks(ss)
+	updated, err := operations.ReorderSequentially(ss, ii)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	topItems := ""
-	for i := 1; i <= len(updated); i++ {
-		s := ss[i]
-		topItems += s.GetTopItem()
+	fmt.Println("Result:", updated.GetTopItems())
+}
+
+func Part2(ss operations.Stacks, ii []operations.Instruction) {
+	fmt.Println()
+	internal.PrintPartHeading("Part 2")
+
+	ss = operations.CloneStacks(ss)
+	updated, err := operations.ReorderGrouped(ss, ii)
+	if err != nil {
+		log.Fatal(err)
 	}
 
-	fmt.Println("Result:", topItems)
+	fmt.Println("Result:", updated.GetTopItems())
 }
