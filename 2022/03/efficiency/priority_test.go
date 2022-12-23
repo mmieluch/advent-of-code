@@ -23,10 +23,10 @@ func Test_buildMapping(t *testing.T) {
 	for r, expected := range testdata {
 		actual, ok := m[r]
 		if !ok {
-			t.Errorf("expected rune '%s' to be present in the mapping", r)
+			t.Errorf("expected rune '%s' to be present in the mapping", string(r))
 		}
 		if expected != actual {
-			t.Errorf("expected priority assigned to a rune '%s' to be %d, but received %d", r, expected, actual)
+			t.Errorf("expected priority assigned to a rune '%s' to be %d, but received %d", string(r), expected, actual)
 		}
 	}
 
@@ -53,7 +53,7 @@ func Test_Priority(t *testing.T) {
 			t.Errorf("expected Priority to succeed, but received error: %s\n", err)
 		}
 		if expected != actual {
-			t.Errorf("expected priority assigned to a rune '%s' to be %d, but received %d", r, expected, actual)
+			t.Errorf("expected priority assigned to a rune '%s' to be %d, but received %d", string(r), expected, actual)
 		}
 	}
 
