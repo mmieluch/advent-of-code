@@ -40,6 +40,30 @@ func GetInput() (string, error) {
 	return LoadInput(abspath)
 }
 
+// GetInputTrimmed will try to load an input file for a specific mode (dev or
+// prod), read it, trim any leading and trailing whitespace, and then return
+// the resulting string. The underlying implementation uses the GetInput before
+// trimming whitespace.
+//
+// The expectation here is that there will always be two input files: input.dev
+// (for hacking purposes) and input.prod (for computing actual values for the
+// Advent of Code validator). Since the names only differ in the suffix, providing
+// the filename as an argument is a bit pointless. Therefore, if a program is
+// invoked without any flags, it will attempt to load the input.dev file by
+// default. To load input.prod, invoke the program with the --production flag.
+//
+// Example:
+// # Current working directory is {repoRoot}/2022/01
+// $ go run main.go --production
+func GetInputTrimmed() (string, error) {
+	input, err := GetInput()
+	if err != nil {
+		return "", err
+	}
+
+	return strings.TrimSpace(input), nil
+}
+
 // LoadInput takes an absolute path to a file and tries to load it as string,
 // with white space trimmed from both ends.
 func LoadInput(abspath string) (string, error) {
